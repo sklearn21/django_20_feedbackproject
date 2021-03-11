@@ -12,7 +12,7 @@ def thankyou_view(request):
 def feedback_view(request):
     if request.method == 'GET':
         form = forms.FeedBackForm()
-        return render(request, 'testapp/feedback.html', {'form': form})
+
     if request.method == 'POST':
         form = forms.FeedBackForm(request.POST)
         if form.is_valid():
@@ -21,4 +21,4 @@ def feedback_view(request):
             print('Student Roll No.: ', form.cleaned_data['rollno'])
             print('Student E-mail: ', form.cleaned_data['email'])
             print('Student Feedback: ', form.cleaned_data['feedback'])
-            return thankyou_view(request)
+    return render(request, 'testapp/feedback.html', {'form': form})
