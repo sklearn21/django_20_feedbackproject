@@ -5,8 +5,9 @@ from . import forms
 # Create your views here.
 
 
-def thank_you(request):
-    return render(request,'testapp/thank_you.html')
+def thankyou_view(request):
+    return render(request, 'testapp/thank_you.html')
+
 
 def feedback_view(request):
     form = forms.FeedBackForm()
@@ -18,6 +19,6 @@ def feedback_view(request):
             print('Student Roll No.: ', form.cleaned_data['rollno'])
             print('Student E-mail: ', form.cleaned_data['email'])
             print('Student Feedback: ', form.cleaned_data['feedback'])
-            thank_you(request)
+            return thankyou_view(request)
 
     return render(request, 'testapp/feedback.html', {'form': form})
