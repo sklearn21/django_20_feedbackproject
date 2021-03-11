@@ -1,11 +1,34 @@
 from django import forms
+from django.core import validators  # For inbuilt implicit validation core module
+
+
+# def starts_with_d(value):
+#     if value[0].lower() != 'd':
+#         raise forms.ValidationError('Name should with d')
+#
+#
+# def name_without_number(value):
+#     if value.isalpha() != True:
+#         raise forms.ValidationError('Name should not contain numbers.')
+#
+#
+def gmail_verification(value):
+    if value[len(value) - 9:] != 'gmail.com':
+        raise forms.ValidationError('Email must be gmail.')
 
 
 class FeedBackForm(forms.Form):
-    name = forms.CharField()
+    name = forms.CharField() #validators=[starts_with_d, name_without_number]
+
     rollno = forms.IntegerField()
-    email = forms.EmailField()
-    feedback = forms.CharField(widget=forms.Textarea, max_length=200, )
+    email = forms.EmailField(validators=[gmail_verification])
+
+    password = forms.CharField(widget=forms.PasswordInput)
+    rpassword = forms.CharField(widget=forms.PasswordInput)
+
+    feedback = forms.CharField(widget=forms.Textarea,
+                               validators=[validators.MaxLengthValidator(40),
+                                           validators.MinLengthValidator(10), ])
 
     # Explicit Validation Example................................................................
 
@@ -30,3 +53,21 @@ class FeedBackForm(forms.Form):
         inputfeedback = self.cleaned_data['feedback']
         print('Validating feedback')
         return inputfeedback
+
+#................................................................................
+
+    def clean(self):
+        print('Total form validation.')
+        cleaned_data = super().clean()
+        inputname = cleaned_data['name']
+        if len(inputname) < 10 :
+            raise forms.ValidationError('Name should compulsory contain min. 10 chars')
+        inputrollno = cleaned_data['rollno']
+        if len(str(inputrollno)) != 3:
+            raise forms.ValidationError('Roll no should contain exact 3 digit.')
+
+        inputpassword = cleaned_data['password']
+        inputrpassword= cleaned_data['rpassword']
+
+        if inputpassword != inputrpassword:
+            raise forms.ValidationError('Password does not match')
