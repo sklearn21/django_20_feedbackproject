@@ -24,11 +24,12 @@ class FeedBackForm(forms.Form):
     email = forms.EmailField(validators=[gmail_verification])
 
     password = forms.CharField(widget=forms.PasswordInput)
-    rpassword = forms.CharField(widget=forms.PasswordInput)
+    rpassword = forms.CharField(label='Password(Again)', widget=forms.PasswordInput)
 
     feedback = forms.CharField(widget=forms.Textarea,
                                validators=[validators.MaxLengthValidator(40),
                                            validators.MinLengthValidator(10), ])
+    bot_handler = forms.CharField(required=False, widget= forms.HiddenInput)
 
     # Explicit Validation Example................................................................
 
@@ -59,6 +60,9 @@ class FeedBackForm(forms.Form):
     def clean(self):
         print('Total form validation.')
         cleaned_data = super().clean()
+        bot_handler_value = cleaned_data['bot_handler']
+        if len(bot_handler_value) > 0:
+            raise forms.ValidationError('Thanks Bot!!')
         inputname = cleaned_data['name']
         if len(inputname) < 10 :
             raise forms.ValidationError('Name should compulsory contain min. 10 chars')
